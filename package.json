@@ -1,0 +1,14 @@
+{
+  "name": "@openi/kernel",
+  "version": "0.1.0",
+  "description": "Openi Reasoning Kernel — shared primitives (Phase A: ids + ontology).",
+  "type": "module",
+  "license": "UNLICENSED",
+  "private": true,
+  "exports": {
+    ".": "./index.js",
+    "./ids": "./ids.js",
+    "./ontology": "./ontology.js"
+  },
+  "files": ["index.js", "ids.js", "ontology.js"]
+}

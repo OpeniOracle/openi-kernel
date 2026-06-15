@@ -1,14 +1,20 @@
 {
   "name": "@openi/kernel",
-  "version": "0.1.0",
-  "description": "Openi Reasoning Kernel — shared primitives (Phase A: ids + ontology).",
+  "version": "0.2.0",
+  "description": "Openi Reasoning Kernel — shared primitives (Phase A: ids + ontology; Phase C: grading + claim + interchange).",
   "type": "module",
   "license": "UNLICENSED",
   "private": true,
   "exports": {
     ".": "./index.js",
     "./ids": "./ids.js",
-    "./ontology": "./ontology.js"
+    "./ontology": "./ontology.js",
+    "./grading": "./grading.js",
+    "./claim": "./claim.js",
+    "./interchange": "./interchange.js"
   },
-  "files": ["index.js", "ids.js", "ontology.js"]
+  "files": ["index.js", "ids.js", "ontology.js", "grading.js", "claim.js", "interchange.js"],
+  "scripts": {
+    "test": "node --test"
+  }
 }

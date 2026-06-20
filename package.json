@@ -11,9 +11,10 @@
     "./ontology": "./ontology.js",
     "./grading": "./grading.js",
     "./claim": "./claim.js",
-    "./interchange": "./interchange.js"
+    "./interchange": "./interchange.js",
+    "./profile/linkview": "./interchange.profile.linkview.js"
   },
-  "files": ["index.js", "ids.js", "ontology.js", "grading.js", "claim.js", "interchange.js"],
+  "files": ["index.js", "ids.js", "ontology.js", "grading.js", "claim.js", "interchange.js", "interchange.profile.linkview.js"],
   "scripts": {
     "test": "node --test"
   }

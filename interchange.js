@@ -166,6 +166,9 @@ function validateEvidenceRef(e, path, errors) {
     if (!isPlainObject(e.grading)) errors.push(`${path}.grading must be an object`)
     else validateGrading(e.grading, `${path}.grading`, errors)
   }
+  if (e.appExtensions !== undefined && !isPlainObject(e.appExtensions)) {
+    errors.push(`${path}.appExtensions must be an object`)
+  }
 }
 
 // Yield { scheme, path } for every GradedValue across the bundle's known grading

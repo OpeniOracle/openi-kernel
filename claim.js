@@ -58,6 +58,9 @@ export function makeEvidenceRef(input = {}) {
   if (input.source !== undefined) e.source = input.source
   if (input.grading !== undefined) e.grading = input.grading
   if (input.capturedAt !== undefined) e.capturedAt = input.capturedAt
+  // Optional app-local carry-through (e.g. body/excerpt, file metadata, app-local
+  // notes). Not required; validated as an object when present (interchange.js).
+  if (input.appExtensions !== undefined) e.appExtensions = input.appExtensions
   return e
 }
 

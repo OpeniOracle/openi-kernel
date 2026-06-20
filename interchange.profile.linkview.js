@@ -97,6 +97,21 @@ export const LINKVIEW_DECONFLICTION_VOCAB = Object.freeze({
   ],
 })
 
+// Carried vocabulary for interpreting claim disposition (finding status). This
+// is NOT a grading axis (axis name is informational only) — disposition is never
+// subject to the grading lossless rule, so registering this does not affect
+// grading validation. It travels so receivers can label draft/review/published.
+export const LINKVIEW_FINDING_STATUS_SCHEME = 'linkview.finding_status@1'
+export const LINKVIEW_FINDING_STATUS_VOCAB = Object.freeze({
+  scheme: LINKVIEW_FINDING_STATUS_SCHEME,
+  axis: 'disposition',
+  values: [
+    { value: 'draft', label: 'Draft', order: 0 },
+    { value: 'review', label: 'Review', order: 1 },
+    { value: 'published', label: 'Published', order: 2 },
+  ],
+})
+
 // The full set an emitter should attach to bundle.vocabularies.
 export function linkviewVocabularies() {
   return [
@@ -105,6 +120,7 @@ export function linkviewVocabularies() {
     LINKVIEW_CREDIBILITY_VOCAB,
     LINKVIEW_CORROBORATION_VOCAB,
     LINKVIEW_DECONFLICTION_VOCAB,
+    LINKVIEW_FINDING_STATUS_VOCAB,
   ]
 }
 
@@ -180,6 +196,20 @@ export function validateLinkviewProfile(bundle) {
     if (!isPlainObject(s)) { errors.push(`${path} must be an object`); continue }
     reqStr(s.id, `${path}.id`, errors)
     validateGradingShape(s.grading, `${path}.grading`, errors)
+  }
+
+  // Top-level evidence[] are EvidenceReferences (id/ref/kind required; optional
+  // appExtensions must be an object). Formalizes LinkView evidence carry-through.
+  for (const [i, ev] of arr(bundle.evidence).entries()) {
+    const path = `evidence[${i}]`
+    if (!isPlainObject(ev)) { errors.push(`${path} must be an object`); continue }
+    reqStr(ev.id, `${path}.id`, errors)
+    reqStr(ev.ref, `${path}.ref`, errors)
+    reqStr(ev.kind, `${path}.kind`, errors)
+    validateGradingShape(ev.grading, `${path}.grading`, errors)
+    if (ev.appExtensions !== undefined && !isPlainObject(ev.appExtensions)) {
+      errors.push(`${path}.appExtensions must be an object`)
+    }
   }
 
   // Timeline

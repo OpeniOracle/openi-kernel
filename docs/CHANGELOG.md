@@ -1,5 +1,63 @@
 # Openi Ecosystem — Change Log
 
+## 2026-07-09 — Overhaul session 2: integrate, then elevate
+
+### Stage 1 — integrated and stabilized (on default branches)
+- Fresh gates green on every feature branch, then **session 1 merged**:
+  kernel → `main` (merge commit `0b592d3`, tagged `v0.2.0` locally — tag
+  push returns 403 in this environment, queued for the operator);
+  BriefBuilder → `claude/briefbuilder-mvp-planning-YiOql` (its actual
+  default — the repo has no `main`); Waypoint and HashLens → `main`.
+- Consumer kernel pins repointed from the floating branch to the exact
+  commit SHA. Post-merge gates green everywhere; the Waypoint →
+  BriefBuilder casepacket round trip re-verified through merged code.
+- PII/secret sweep across all five repos: personal email/name fully gone;
+  only synthetic fixtures remain; no service-role keys anywhere. One
+  finding: LinkView tracked `.env` (public-safe anon key) — untracked in
+  the LinkView pass.
+- Feature branches kept alive (they carry this session's Stage 2 work,
+  which awaits review/merge); deletion deferred accordingly. A stale
+  parallel branch `claude/openi-suite-architecture-2wx9y7` (June, its own
+  bundle-export design) exists in three repos — flagged for reconciliation.
+
+### Stage 2 (on feature branches, gates green, ready to merge)
+- **UI facelift (2A).** Waypoint leads: disposition-colored rails, mono
+  weight chips (STR/MOD/WK), amber discipline (signal = escalated/anomalous
+  only), denser cards, Enter-to-save triage notes. BriefBuilder workspace:
+  per-tab counts + pending-review dot, approved/total ratio, import modal
+  previews every incoming claim. HashLens case results: matched-digest
+  column with copy, sub-85% confidence flagged, ISO mono dates.
+  Before/after screenshots captured.
+- **Kernel v0.3.0 (2B, ADR-003).** `@openi/kernel/repository` — the
+  localStorage storage seam three apps re-implemented; BriefBuilder and
+  Waypoint migrated behavior-preserving (verified in-browser against
+  pre-change blobs); HashLens deferred (domain-rich store, see ADR-003).
+- **LinkView first contact (2C).** Suite tokens on its theme variables
+  (surfaces/text/gold; `--primary` blue deferred — load-bearing in entity
+  palette and charts), self-hosted Geist replacing the Google Fonts CDN,
+  serifs retired, casepacket v1 export from the client view with the
+  verification taxonomy on its own axis. Vendored kernel subset (commit
+  `b594b97`) because bun cannot take the git dep here. No schema/CI changes.
+- **Casepacket governance (2D).** `docs/casepacket-policy.md`: additive-only
+  within v1, breaking bumps + ADR, importers reject unknown versions with
+  an analyst-readable message, vendored copies must state their source.
+
+## Queued backlog — next session
+
+1. Merge this session's Stage 2 feature branches after review (kernel
+   v0.3.0 first, then consumers — pins already reference the kernel SHA).
+2. Push the `v0.2.0` tag (and tag v0.3.0 at its merge) — operator, see
+   checklist.
+3. LinkView `--primary` → amber decision (needs a pass over entity palette
+   + charts so amber-as-signal doesn't collide with gold case accents).
+4. LinkView on the real `@openi/kernel` dependency once bun/registry
+   allows; delete the vendored subset.
+5. HashLens localStore onto the kernel repository seam (ADR-003 deferral).
+6. Kernel strict-UUID helper so HashLens drops its local `uuid()`.
+7. Waypoint packet import (round-trip parity); HashLens → LinkView graph
+   export; BriefBuilder AI proxy; launch/SSO + entitlements (platform
+   decision); reconcile/archive `claude/openi-suite-architecture-2wx9y7`.
+
 ## 2026-07-09 — Overhaul session 1 (branch `claude/openi-ecosystem-overhaul-xc5kca`, all repos)
 
 ### openi-kernel

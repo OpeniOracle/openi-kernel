@@ -1,14 +1,32 @@
 {
   "name": "@openi/kernel",
-  "version": "0.1.0",
-  "description": "Openi Reasoning Kernel — shared primitives (Phase A: ids + ontology).",
+  "version": "0.2.0",
+  "description": "Openi Reasoning Kernel — shared primitives (ADR-001 Phase A + ADR-002: grading, entity, evidence, claim, provenance, case packet interchange, branded export layer, design tokens).",
   "type": "module",
   "license": "UNLICENSED",
   "private": true,
-  "exports": {
-    ".": "./index.js",
-    "./ids": "./ids.js",
-    "./ontology": "./ontology.js"
+  "scripts": {
+    "test": "node --test"
   },
-  "files": ["index.js", "ids.js", "ontology.js"]
+  "exports": {
+    ".": { "types": "./types/index.d.ts", "default": "./index.js" },
+    "./ids": { "types": "./types/ids.d.ts", "default": "./ids.js" },
+    "./ontology": { "types": "./types/ontology.d.ts", "default": "./ontology.js" },
+    "./grading": { "types": "./types/grading.d.ts", "default": "./grading.js" },
+    "./entity": { "types": "./types/entity.d.ts", "default": "./entity.js" },
+    "./evidence": { "types": "./types/evidence.d.ts", "default": "./evidence.js" },
+    "./claim": { "types": "./types/claim.d.ts", "default": "./claim.js" },
+    "./provenance": { "types": "./types/provenance.d.ts", "default": "./provenance.js" },
+    "./casepacket": { "types": "./types/casepacket.d.ts", "default": "./casepacket.js" },
+    "./export": { "types": "./types/export.d.ts", "default": "./export.js" },
+    "./format": { "types": "./types/format.d.ts", "default": "./format.js" },
+    "./tokens": { "types": "./types/tokens.d.ts", "default": "./tokens.js" },
+    "./tailwind-preset": "./tailwind-preset.js",
+    "./tokens.css": "./tokens.css"
+  },
+  "files": [
+    "index.js", "version.js", "ids.js", "ontology.js", "grading.js", "entity.js",
+    "evidence.js", "claim.js", "provenance.js", "casepacket.js", "export.js",
+    "format.js", "tokens.js", "tailwind-preset.js", "tokens.css", "types/"
+  ]
 }

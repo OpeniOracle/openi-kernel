@@ -55,7 +55,11 @@ export function validateCasePacket(packet) {
     problems.push(`packet.format must be "${CASE_PACKET_FORMAT}"`)
   }
   if (packet.version !== CASE_PACKET_VERSION) {
-    problems.push(`packet.version ${JSON.stringify(packet.version)} is not supported (expected ${CASE_PACKET_VERSION})`)
+    problems.push(
+      `This packet is ${CASE_PACKET_FORMAT} version ${JSON.stringify(packet.version)}, ` +
+        `but this app understands version ${CASE_PACKET_VERSION}. ` +
+        `Update this app, or re-export the case from ${packet.produced_by?.app || 'the producing app'}.`,
+    )
   }
   if (!packet.case || typeof packet.case !== 'object' || !packet.case.title) {
     problems.push('packet.case.title is required')

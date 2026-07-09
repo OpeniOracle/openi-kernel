@@ -1,0 +1,32 @@
+/* Openi design tokens as CSS custom properties — for Tailwind v4 / plain-CSS
+ * consumers (LinkView). Values mirror tokens.js; that file is the source of
+ * truth. Keep in sync when tokens change. */
+:root {
+  --openi-navy-950: #0a0f1c;
+  --openi-navy-900: #0e1525;
+  --openi-navy-800: #141d31;
+  --openi-navy-700: #1d293f;
+  --openi-navy-600: #27364f;
+  --openi-navy-500: #33455f;
+
+  --openi-bone-100: #f7f4ec;
+  --openi-bone-200: #eae5d8;
+  --openi-bone-300: #d6d0bf;
+  --openi-bone-400: #b3ac99;
+  --openi-bone-500: #918a77;
+  --openi-bone-600: #6f695a;
+
+  --openi-signal: #d8a657;
+  --openi-signal-soft: #e3b877;
+  --openi-signal-strong: #f0c987;
+  --openi-signal-muted: #3a2f1a;
+  --openi-signal-faint: #241d10;
+
+  --openi-ok: #34d399;
+  --openi-warn: #fbbf24;
+  --openi-danger: #f87171;
+  --openi-info: #60a5fa;
+
+  --openi-font-sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  --openi-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+}

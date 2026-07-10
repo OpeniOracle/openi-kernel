@@ -1,5 +1,78 @@
 # Openi Ecosystem — Change Log
 
+## 2026-07-10 — Overhaul session 3: land, unify, deliver
+
+### Stage 1 — session 2 landed
+- Fresh gates green on all five feature branches, then true merges (no
+  squash) to every default: kernel v0.3.0 → `main` (merge `a650ebb`,
+  tagged locally), BriefBuilder → its default + a new conventional `main`
+  branch pushed at the same head (default-branch flip is a GitHub-settings
+  operator step), Waypoint/HashLens/LinkView → `main`. Consumer pins
+  repointed to the kernel merge SHA. Post-merge gates green everywhere;
+  Waypoint → BriefBuilder round trip re-verified.
+- Tag pushes (v0.2.0, v0.3.0) still refused by the git proxy — commands on
+  the operator checklist. Branch deletions are refused the same way, so
+  the stale-branch removal is also an operator command.
+- **Stale branch `claude/openi-suite-architecture-2wx9y7` — reconcile-or-
+  archive rationale:** a June-era parallel design of the same interchange
+  goal (kernel `interchange.js` + `linkview.profile@1` bundle profiles;
+  waypoint `leadToClaim` emitter + hand-vendored kernel; LinkView bundle
+  exporter). Superseded on every point by the shipped `openi.casepacket`
+  v1 (simpler envelope, four live integrations, governance policy) and by
+  the drift-protected vendoring shipped this session. Harvest kept:
+  `docs/specs/linkview.profile@1.md` (on that branch) is useful input for
+  the future verification-taxonomy/profile ADR — pointer queued. Nothing
+  else is worth porting. Decision: archive/delete (operator command, proxy
+  blocks deletion here).
+
+### Stage 2 (kernel v0.4.0 on feature branches, gates green, ready to land)
+- **LinkView on the real kernel (A).** Vendored verbatim kernel v0.4.0
+  files + `scripts/sync-openi-kernel.mjs` (stamps MANIFEST.json with
+  version/commit/sha256s) + a vitest drift check inside the normal verify
+  chain — silent divergence is impossible. Mechanism documented in kernel
+  `docs/vendoring.md`. Chosen over a bun git dependency because bun.lock
+  cannot be regenerated in this environment (any dep change would break
+  CI); one-file switch when it can.
+- **Action/signal roles (B, ADR-004).** Kernel `action` blue (interactive)
+  vs `signal` amber (attention-only). Preset `accent` → action; all four
+  apps reclassified: WP/BB/HL controls are blue, amber only for escalated/
+  pending-review/anomalous/AI marking; HashLens brand → action; LinkView
+  `--primary` → action blue. Deviations: LinkView entity/chart palette
+  keeps its own electric blue as a data color; `warn` amber remains a
+  status tone.
+- **Client-ready reporting (C).** Kernel export layer is document-grade:
+  A4 @page rules, letterhead (brand · sensitivity · document id),
+  prepared-for line, controlled breaks (headings/rows/annexes), print
+  footer, and a paper theme so previews look like the deliverable. New
+  `gradingLegendSection()`. BriefBuilder export previews the actual
+  document (sandboxed frame), adds a provenance annex (findings + evidence
+  registers) and document ids; HashLens client summary rewired through the
+  same layer (client-safe, plaintext-handling annex; kernel grading legend
+  deliberately omitted — its numeric confidence is a heuristic, not the
+  suite axes). **DOCX queued, not built:** print-perfect HTML → PDF covers
+  the client need; the maintained client-side option (`docx` npm) adds
+  ~90 KB gz to every bundle for a format nobody has requested — revisit on
+  first client demand.
+- **Entitlement memo (D).** `docs/hashlens-entitlements-memo.md`:
+  fail-closed recommendation with a Supabase-native design (grant table +
+  RLS-side `has_tool()`), sequencing to avoid bricking flows, and what a
+  future platform issuer would change. Nothing built by design.
+
+## Queued backlog — next session (session 4)
+
+1. Land session-3 Stage 2 (kernel v0.4.0 first, then WP/BB/HL/LinkView —
+   pins already reference the kernel SHA `b9727d7`).
+2. Operator: push tags v0.2.0/v0.3.0 (+ tag v0.4.0 at its merge), delete
+   the stale + merged feature branches, flip BriefBuilder default to
+   `main` in GitHub settings.
+3. HashLens entitlements implementation per the memo (fail-closed +
+   grants migration).
+4. Harvest `docs/specs/linkview.profile@1.md` from the stale branch into
+   the Phase-C verification-taxonomy ADR discussion (ADR-001 A.4).
+5. Waypoint packet import (round-trip parity); HashLens → LinkView graph
+   export; BriefBuilder AI proxy; kernel strict-UUID helper; DOCX on
+   client demand; launch/SSO platform decision.
+
 ## 2026-07-09 — Overhaul session 2: integrate, then elevate
 
 ### Stage 1 — integrated and stabilized (on default branches)

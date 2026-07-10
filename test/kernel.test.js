@@ -16,6 +16,7 @@ import {
   summarizeCasePacket, casePacketFilename,
 } from '../casepacket.js'
 import { escapeHtml, csvEscape, csvRow, toCsv, slugify } from '../format.js'
+import { KERNEL_VERSION } from '../version.js'
 import { docToMarkdown, docToHtml, AI_CONTENT_DISCLAIMER } from '../export.js'
 import { palette, semantic, fontFamilies } from '../tokens.js'
 import preset from '../tailwind-preset.js'
@@ -108,7 +109,7 @@ test('casepacket: build → serialize → parse round-trip', () => {
   assert.deepEqual(problems, [])
   assert.equal(ok, true)
   assert.equal(parsed.case.title, 'Pier 7 warehouse')
-  assert.equal(parsed.kernel_version, '0.2.0')
+  assert.equal(parsed.kernel_version, KERNEL_VERSION)
 
   const summary = summarizeCasePacket(parsed)
   assert.equal(summary.claims, 1)

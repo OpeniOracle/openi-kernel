@@ -22,6 +22,7 @@ Surface is governed by ADRs — do not expand without one:
 | `@openi/kernel/claim` | The Claim envelope — graded, evidence-backed, provenance-stamped assertion |
 | `@openi/kernel/provenance` | Authorship stamp (`GENERATION_SOURCES`, `REVIEW_STATUSES`), lineage |
 | `@openi/kernel/casepacket` | `openi.casepacket` v1 interchange: build/serialize/parse/validate |
+| `@openi/kernel/repository` | Phase B storage seam: `createLocalRepository` (namespaced blob, cascades, corruption-safe), `createMemoryStorage` |
 | `@openi/kernel/export` | Branded export layer: document model → Markdown / print-ready HTML |
 | `@openi/kernel/format` | `escapeHtml`, `csvEscape`, `toCsv`, `slugify` |
 | `@openi/kernel/tokens` | Design tokens (navy/bone/amber signal, Geist stacks) as data |

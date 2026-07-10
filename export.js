@@ -32,6 +32,8 @@ import {
   RELIABILITY_LEVELS,
   CREDIBILITY_LEVELS,
 } from './grading.js'
+import { ENTITY_TYPES } from './entity.js'
+import { labelFor } from './ontology.js'
 
 // Standard disclaimer whenever a document contains AI-generated content that
 // has not been individually attributed. Same contract as BriefBuilder's
@@ -61,6 +63,50 @@ export function gradingLegendSection() {
       ],
     },
   }
+}
+
+// Entity annex (ADR-005) — the register of who/what the document concerns,
+// rendered from packet entities (+ optional relationships). Presentation
+// level: relationships are resolved to labels here so the annex stands alone.
+export function entityAnnexSections(entities = [], relationships = []) {
+  if (!entities.length) return []
+  const byId = new Map(entities.map((e) => [e.id, e]))
+  const statusOf = (e) =>
+    e.gradings?.ranking ? `${e.gradings.ranking.label || e.gradings.ranking.value}` : '—'
+  const sections = [
+    {
+      heading: 'Entity annex — register',
+      annex: true,
+      paragraphs: [
+        'Entities referenced by this document. Verification status uses the producing tool\u2019s own axis and is reported verbatim, not restated.',
+      ],
+      table: {
+        headers: ['Entity', 'Type', 'Also known as', 'Status', 'Notes'],
+        rows: entities.map((e) => [
+          e.label || '—',
+          labelFor(ENTITY_TYPES, e.type),
+          (e.aliases || []).join(', ') || '—',
+          statusOf(e),
+          e.description || '—',
+        ]),
+      },
+    },
+  ]
+  if (relationships.length) {
+    sections.push({
+      heading: 'Entity annex — relationships',
+      annex: true,
+      table: {
+        headers: ['From', 'Relationship', 'To'],
+        rows: relationships.map((r) => [
+          byId.get(r.source_id)?.label || r.source_id,
+          r.label || 'related to',
+          byId.get(r.target_id)?.label || r.target_id,
+        ]),
+      },
+    })
+  }
+  return sections
 }
 
 export function docToMarkdown(doc) {

@@ -211,3 +211,57 @@ test('export: paper theme previews as the printed document; legend + annex suppo
   const dark = docToHtml({ title: 'X', sections: [] })
   assert.ok(dark.includes('color-scheme: dark'), 'default stays the instrument look')
 })
+
+test('entity: full record and relationships validate; plain refs stay valid (ADR-005)', async () => {
+  const { newEntity, validateEntity, newRelationship, validateRelationship } = await import('../entity.js')
+  const org = newEntity({ type: 'organization', label: 'Meridian Freight Ltd', aliases: ['MFL'], description: 'Shell consignee', gradings: { ranking: { axis: 'linkview.verification', value: 'likely' } } })
+  assert.deepEqual(validateEntity(org), [])
+  assert.deepEqual(validateEntity(newEntityRef({ type: 'person', label: 'Plain ref' })), [], 'EntityRef remains a valid entity')
+  assert.equal(validateEntity({ id: 'x', type: 'person', label: 'A', aliases: [1] }).length, 1)
+  assert.equal(validateEntity({ id: 'x', type: 'person', label: 'A', attributes: [{}] }).length, 1)
+
+  const rel = newRelationship({ source_id: org.id, target_id: 'e2', label: 'consignee of' })
+  assert.deepEqual(validateRelationship(rel), [])
+  assert.equal(validateRelationship({ id: 'r', source_id: '', target_id: 'b' }).length, 1)
+})
+
+test('casepacket: relationships are additive — absent valid, present must resolve (ADR-005)', async () => {
+  const { newEntity, newRelationship } = await import('../entity.js')
+  const a = newEntity({ type: 'person', label: 'Dana Voss' })
+  const b = newEntity({ type: 'organization', label: 'Meridian Freight Ltd' })
+  const packet = buildCasePacket({
+    producer: { app: 'linkview' },
+    caseInfo: { title: 'Register test' },
+    entities: [a, b],
+    relationships: [newRelationship({ source_id: a.id, target_id: b.id, label: 'director of' })],
+  })
+  const res = parseCasePacket(serializeCasePacket(packet))
+  assert.deepEqual(res.problems, [])
+  assert.equal(summarizeCasePacket(res.packet).relationships, 1)
+
+  // pre-ADR-005 packet (no relationships key) stays valid
+  const legacy = buildCasePacket({ producer: { app: 'waypoint' }, caseInfo: { title: 'Old' } })
+  assert.equal('relationships' in legacy, false)
+  assert.deepEqual(parseCasePacket(serializeCasePacket(legacy)).problems, [])
+
+  // dangling edge fails loudly
+  const bad = buildCasePacket({
+    producer: { app: 'linkview' }, caseInfo: { title: 'Bad' }, entities: [a],
+    relationships: [newRelationship({ source_id: a.id, target_id: 'ghost', label: 'x' })],
+  })
+  assert.ok(parseCasePacket(serializeCasePacket(bad)).problems.some((p) => p.includes('missing entity')))
+})
+
+test('export: entity annex renders register and label-resolved relationships', async () => {
+  const { entityAnnexSections } = await import('../export.js')
+  const { newEntity, newRelationship } = await import('../entity.js')
+  const a = newEntity({ id: 'e-a', type: 'person', label: 'Dana Voss', aliases: ['D. Voss'] })
+  const b = newEntity({ id: 'e-b', type: 'organization', label: 'Meridian Freight Ltd', description: 'Consignee' })
+  const sections = entityAnnexSections([a, b], [newRelationship({ source_id: 'e-a', target_id: 'e-b', label: 'director of' })])
+  assert.equal(sections.length, 2)
+  assert.ok(sections.every((s) => s.annex))
+  assert.deepEqual(sections[1].table.rows[0], ['Dana Voss', 'director of', 'Meridian Freight Ltd'])
+  const html = docToHtml({ title: 'T', sections }, { theme: 'paper' })
+  assert.ok(html.includes('Meridian Freight Ltd'))
+  assert.deepEqual(entityAnnexSections([], []), [], 'no entities → no annex')
+})

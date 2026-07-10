@@ -20,3 +20,34 @@ export interface EntityRef {
 
 export function newEntityRef(init?: Partial<EntityRef>): EntityRef
 export function validateEntityRef(ref: unknown): string[]
+
+import type { Grading } from './grading.js'
+
+export interface EntityAttribute {
+  label: string
+  value: string
+}
+
+/** Full register record (ADR-005). All additions beyond EntityRef optional. */
+export interface Entity extends EntityRef {
+  aliases?: string[]
+  description?: string
+  attributes?: EntityAttribute[]
+  gradings?: Grading
+  extensions?: Record<string, unknown>
+}
+
+export interface Relationship {
+  id: string
+  source_id: string
+  target_id: string
+  label: string
+  directed?: boolean
+  gradings?: Grading
+  extensions?: Record<string, unknown>
+}
+
+export function newEntity(init?: Partial<Entity>): Entity
+export function validateEntity(entity: unknown): string[]
+export function newRelationship(init?: Partial<Relationship>): Relationship
+export function validateRelationship(rel: unknown): string[]

@@ -1,5 +1,5 @@
 import type { Claim } from './claim.js'
-import type { EntityRef } from './entity.js'
+import type { Entity, EntityRef, Relationship } from './entity.js'
 import type { EvidenceRef } from './evidence.js'
 
 export const CASE_PACKET_FORMAT: 'openi.casepacket'
@@ -26,7 +26,8 @@ export interface CasePacket {
   produced_by: CasePacketProducer
   produced_at: string
   case: CasePacketCase
-  entities: EntityRef[]
+  entities: (EntityRef | Entity)[]
+  relationships?: Relationship[]
   evidence: EvidenceRef[]
   claims: Claim[]
   notes: string[]
@@ -40,15 +41,17 @@ export interface CasePacketSummary {
   evidence: number
   claims: number
   notes: number
+  relationships: number
 }
 
 export function buildCasePacket(init: {
   producer: CasePacketProducer
   caseInfo: Partial<CasePacketCase> & { title?: string }
-  entities?: EntityRef[]
+  entities?: (EntityRef | Entity)[]
   evidence?: EvidenceRef[]
   claims?: Claim[]
   notes?: string[]
+  relationships?: Relationship[]
 }): CasePacket
 
 export function validateCasePacket(packet: unknown): string[]

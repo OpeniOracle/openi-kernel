@@ -10,19 +10,20 @@ import { nowIso } from './ids.js'
 import { slugify } from './format.js'
 import { KERNEL_VERSION } from './version.js'
 import { validateClaim } from './claim.js'
-import { validateEntityRef } from './entity.js'
+import { validateEntity, validateRelationship } from './entity.js'
 import { validateEvidenceRef } from './evidence.js'
 
 export const CASE_PACKET_FORMAT = 'openi.casepacket'
 export const CASE_PACKET_VERSION = 1
 
 export function buildCasePacket({
-  producer,      // { app, app_version? }
-  caseInfo,      // { id, title, summary?, analyst?, sensitivity?, created_at? }
-  entities = [],
+  producer,       // { app, app_version? }
+  caseInfo,       // { id, title, summary?, analyst?, sensitivity?, created_at? }
+  entities = [],  // EntityRef or full Entity records (ADR-005)
   evidence = [],
   claims = [],
   notes = [],
+  relationships,  // optional entity relationships (ADR-005; additive in v1)
 } = {}) {
   return {
     format: CASE_PACKET_FORMAT,
@@ -45,6 +46,7 @@ export function buildCasePacket({
     evidence,
     claims,
     notes,
+    ...(relationships !== undefined ? { relationships } : {}),
   }
 }
 
@@ -69,7 +71,24 @@ export function validateCasePacket(packet) {
   }
   if (Array.isArray(packet.entities)) {
     packet.entities.forEach((e, i) =>
-      problems.push(...validateEntityRef(e).map((p) => `packet.entities[${i}]: ${p}`)))
+      problems.push(...validateEntity(e).map((p) => `packet.entities[${i}]: ${p}`)))
+  }
+  // Optional (ADR-005): relationships between packet entities. Absent is
+  // valid v1; when present, edges must resolve within the packet.
+  if (packet.relationships !== undefined) {
+    if (!Array.isArray(packet.relationships)) {
+      problems.push('packet.relationships must be an array when present')
+    } else {
+      const entityIds = new Set((packet.entities || []).map((e) => e.id))
+      packet.relationships.forEach((r, i) => {
+        problems.push(...validateRelationship(r).map((p) => `packet.relationships[${i}]: ${p}`))
+        for (const key of ['source_id', 'target_id']) {
+          if (r?.[key] && !entityIds.has(r[key])) {
+            problems.push(`packet.relationships[${i}]: ${key} references missing entity "${r[key]}"`)
+          }
+        }
+      })
+    }
   }
   if (Array.isArray(packet.evidence)) {
     packet.evidence.forEach((e, i) =>
@@ -115,6 +134,7 @@ export function summarizeCasePacket(packet) {
     evidence: packet?.evidence?.length || 0,
     claims: packet?.claims?.length || 0,
     notes: packet?.notes?.length || 0,
+    relationships: packet?.relationships?.length || 0,
   }
 }
 

@@ -17,7 +17,7 @@ import {
 } from '../casepacket.js'
 import { escapeHtml, csvEscape, csvRow, toCsv, slugify } from '../format.js'
 import { KERNEL_VERSION } from '../version.js'
-import { docToMarkdown, docToHtml, AI_CONTENT_DISCLAIMER } from '../export.js'
+import { docToMarkdown, docToHtml, gradingLegendSection, AI_CONTENT_DISCLAIMER } from '../export.js'
 import { palette, semantic, fontFamilies } from '../tokens.js'
 import preset from '../tailwind-preset.js'
 
@@ -179,11 +179,35 @@ test('export: does not mutate the caller doc model', () => {
   assert.equal(doc.meta.length, 1)
 })
 
-test('tokens: palette, semantics, preset are consistent', () => {
+test('tokens: action/signal roles are distinct and preset maps them (ADR-004)', () => {
   assert.equal(palette.navy[950], '#0a0f1c')
-  assert.equal(semantic.accent, palette.signal.DEFAULT)
+  assert.equal(palette.action.DEFAULT, '#3b82f6')
+  assert.notEqual(palette.action.DEFAULT, palette.signal.DEFAULT)
+  assert.equal(semantic.action, palette.action.DEFAULT)
+  assert.equal(semantic.signal, palette.signal.DEFAULT)
+  assert.equal(semantic.accent, palette.signal.DEFAULT, 'legacy alias keeps amber for data consumers')
   assert.match(fontFamilies.sans, /^'Geist'/)
-  assert.equal(preset.theme.extend.colors.accent.DEFAULT, palette.signal.DEFAULT)
-  assert.equal(preset.theme.extend.fontFamily.sans[0], 'Geist')
+  assert.equal(preset.theme.extend.colors.accent.DEFAULT, palette.action.DEFAULT, 'accent utilities are the action color')
+  assert.equal(preset.theme.extend.colors.action.DEFAULT, palette.action.DEFAULT)
+  assert.equal(preset.theme.extend.colors.signal.DEFAULT, palette.signal.DEFAULT)
   assert.equal(preset.theme.extend.colors.ai.DEFAULT, palette.signal.DEFAULT)
+  assert.equal(preset.theme.extend.fontFamily.sans[0], 'Geist')
+})
+
+test('export: paper theme previews as the printed document; legend + annex supported', () => {
+  const legend = gradingLegendSection()
+  assert.ok(legend.table.rows.length === 4)
+  const html = docToHtml({
+    title: 'Client Brief',
+    document_id: 'OPI-2026-0042',
+    prepared_for: 'Acme Corp',
+    sections: [legend],
+  }, { theme: 'paper' })
+  assert.ok(html.includes('color-scheme: light'), 'paper theme renders light on screen')
+  assert.ok(html.includes('OPI-2026-0042'))
+  assert.ok(html.includes('Prepared for Acme Corp'))
+  assert.ok(html.includes('class="annex"'))
+  assert.ok(html.includes('@page'))
+  const dark = docToHtml({ title: 'X', sections: [] })
+  assert.ok(dark.includes('color-scheme: dark'), 'default stays the instrument look')
 })

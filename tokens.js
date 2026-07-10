@@ -9,10 +9,15 @@
 //     non-Tailwind consumers such as LinkView)
 //   - directly, for exports and canvas/SVG rendering.
 //
-// Amber convention (ADR-002 decision 2): `signal` amber is the suite-wide
-// accent for primary actions and emphasis. AI-provenance marking keeps a
-// distinct treatment — the ✦ glyph plus an explicit "AI" badge/border — so
-// provenance never relies on color alone.
+// Color roles (ADR-004):
+//   `action` (blue)  — interactive elements: buttons, links, focus rings,
+//                      selected states, form controls. The thing you click.
+//   `signal` (amber) — state that demands analyst attention: escalations,
+//                      pending review, anomalous cohorts, AI-content marking.
+//                      NEVER a default button color — if everything glows
+//                      amber, nothing does.
+// AI-provenance marking keeps a distinct treatment — the ✦ glyph plus an
+// explicit "AI" badge/border — so provenance never relies on color alone.
 
 export const palette = {
   // Surfaces — deep navy, darkest first. Harvested from BriefBuilder/Waypoint
@@ -34,7 +39,15 @@ export const palette = {
     500: '#918a77',
     600: '#6f695a',
   },
-  // The one signal accent. Continuous with the amber BriefBuilder/Waypoint
+  // Interactive-action color (ADR-004) — harvested from the blue the suite's
+  // apps used for controls before the overhaul (BriefBuilder/Waypoint accent,
+  // LinkView primary).
+  action: {
+    DEFAULT: '#3b82f6',
+    soft: '#60a5fa',
+    muted: '#1e3a5f',
+  },
+  // The attention signal. Continuous with the amber BriefBuilder/Waypoint
   // already ship (#d8a657), so existing amber surfaces stay on-brand.
   signal: {
     DEFAULT: '#d8a657',
@@ -68,6 +81,13 @@ export const semantic = {
   textBright: palette.bone[100],
   textMuted: palette.bone[400],
   textFaint: palette.bone[500],
+  action: palette.action.DEFAULT,
+  actionSoft: palette.action.soft,
+  actionMuted: palette.action.muted,
+  signal: palette.signal.DEFAULT,
+  signalSoft: palette.signal.soft,
+  signalMuted: palette.signal.muted,
+  // Legacy aliases (pre-ADR-004 "accent" meant the amber signal).
   accent: palette.signal.DEFAULT,
   accentSoft: palette.signal.soft,
   accentMuted: palette.signal.muted,

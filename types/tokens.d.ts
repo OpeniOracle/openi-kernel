@@ -10,9 +10,13 @@ export interface SignalScale {
 export interface StatusColors {
   ok: string; warn: string; danger: string; info: string
 }
+export interface ActionScale {
+  DEFAULT: string; soft: string; muted: string
+}
 export const palette: {
   navy: NavyScale
   bone: BoneScale
+  action: ActionScale
   signal: SignalScale
   status: StatusColors
 }

@@ -2,12 +2,15 @@
 //   import openi from '@openi/kernel/tailwind-preset'
 //   export default { presets: [openi], content: [...] }
 //
-// Key mappings chosen for low-risk adoption by the existing apps:
-//   - `accent` is now the amber signal (was blue in BriefBuilder/Waypoint) —
-//     existing `*-accent` utilities flip to the brand accent automatically.
-//   - `ai` keeps its amber family so existing AI-provenance styling stays
-//     valid; the ✦ glyph + badge carries the semantic distinction.
-//   - `info` provides the demoted blue for links/informational chrome.
+// Color roles (ADR-004):
+//   - `action` / `accent` — the interactive blue: buttons, links, focus
+//     rings, selected states. (`accent` aliases `action` so the existing
+//     `*-accent` control styling flips to the action color suite-wide.)
+//   - `signal` — the amber attention accent: escalations, pending review,
+//     anomalous cohorts. Never a default button color.
+//   - `ai` — amber family for AI-provenance surfaces (always paired with the
+//     ✦ glyph / an explicit badge; color alone never carries the meaning).
+//   - `info` retains the soft blue used for informational chrome.
 
 import { palette, fontFamilies } from './tokens.js'
 
@@ -17,12 +20,12 @@ export default {
       colors: {
         navy: palette.navy,
         bone: palette.bone,
+        action: palette.action,
         signal: palette.signal,
         accent: {
-          DEFAULT: palette.signal.DEFAULT,
-          soft: palette.signal.soft,
-          strong: palette.signal.strong,
-          muted: palette.signal.muted,
+          DEFAULT: palette.action.DEFAULT,
+          soft: palette.action.soft,
+          muted: palette.action.muted,
         },
         ai: {
           DEFAULT: palette.signal.DEFAULT,

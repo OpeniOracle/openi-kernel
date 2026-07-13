@@ -47,3 +47,23 @@ found a third. Verbatim parallel implementations:
 - No Supabase implementation in the kernel: server backends stay app-side
   (each app's auth/RLS posture differs); the kernel owns only the contract
   and the local seam.
+
+## Addendum (2026-07-12, session 5): HashLens migration formally parked
+
+Re-assessed after the entitlement work, as directed. The original deferral
+reasons stand, and inspection adds a decisive one: HashLens's `localStore`
+performs **multi-collection writes atomically** — each domain method
+(`runMatch`, `saveSelectors`, audited reveals) assembles its changes and
+issues a single `writeDb`, so a quota error or crash mid-method cannot leave
+partial state. The kernel seam is deliberately per-operation atomic; backing
+HashLens's methods with it would turn one atomic write into N sequential
+writes and silently weaken that guarantee — a behavior change, not a
+behavior-preserving refactor, purchased for deduplication with no
+user-facing benefit.
+
+**Decision: parked.** Revisit only if (a) the kernel contract grows an
+explicit batched/transactional write (a real design task, not a retrofit),
+or (b) HashLens replaces localStorage with a server backend, at which point
+the contract conversation changes entirely. The entitlement work is
+orthogonal — it touched auth policies and the app gate, not the storage
+seam.

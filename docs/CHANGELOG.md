@@ -1,5 +1,57 @@
 # Openi Ecosystem — Change Log
 
+## 2026-07-12 — Overhaul session 5: land, audit, hand over (CLOSING SESSION)
+
+### Stage 0/1 — session 4 landed
+Reality check: still zero tags on remote, stale branches present, BB default
+unflipped — plus two new Lovable-bot commits on LinkView main ("Glass Harbor
+baseline" dev seed, no secrets). Merged the bot commits UNDER the feature
+work, then true-merged kernel v0.5.0 → main (`db31c4c`; tags attempted, still
+refused — 0 on remote), repointed pins + LinkView vendor manifest, merged all
+four apps (BB to legacy default + main mirror). Post-merge: all five defaults
+green (kernel 26 / BB 6 / WP 4 / HL 32 / LinkView 151), and BOTH round trips
+verified through merged default code — Waypoint→BriefBuilder claims and
+LinkView→BriefBuilder entity annex (register + relationships + verbatim
+verification statuses).
+
+### Stage 2 — close-out
+- **Acceptance run (A).** Full DEMO_RUNBOOK executed through the real merged
+  default UIs by browser automation — all four acts passed, artifacts
+  captured (9 screenshots, 2 packets, 3 HTML + 3 PDF deliverables). This is
+  the overhaul's acceptance test. `docs/SUITE_STATUS.md` written as the
+  post-overhaul baseline (exact SHAs, eight-priorities scorecard, honest
+  gaps) — the opening context for future sessions.
+- **Operator runbook (B).** `OPERATOR_CHECKLIST.md` rewritten for a
+  non-technical browser operator: Releases-page tag steps, Settings
+  default-flip, branch deletions, and the two security-critical Supabase
+  clusters as exact SQL-editor pastes with expected output + verification
+  queries + no-lockout ordering. One CLI item (the bun update) isolated with
+  rationale.
+- **Audit (C).** npm audit across all five: BriefBuilder react-router
+  open-redirect PATCHED (0 prod vulns after). Kernel/Waypoint/HashLens clean.
+  LinkView carries an undici HIGH + moderates in prod deps whose fix needs a
+  bun-lockfile regen off-proxy — triaged in SUITE_STATUS with real exposure
+  (Workers runtime, not undici at request time) and queued as a runbook item.
+  Final secrets/PII sweep clean (only synthetic fixtures + a correctly
+  server-only service-role read).
+- **HashLens Phase B (D).** Formally PARKED — ADR-003 addendum: its localStore
+  writes multiple collections atomically per method; the per-operation kernel
+  seam would weaken that guarantee (a behavior change, not a refactor). The
+  entitlement work was orthogonal (auth policies + app gate, not storage).
+- **Handover (E).** `docs/BACKLOG.md` (prioritized product backlog with
+  why/size/deps; overhaul-closed items listed), `docs/SUITE_OVERVIEW.md`
+  (plain-language, verifiable-only one-pager), this changelog finalized.
+
+### The overhaul, closed
+Five sessions: kernel v0.1.0 (ids+ontology) → v0.5.0 (grading, claim,
+evidence, entity+relationships, provenance, casepacket v1 + governance,
+document-grade export, repository contract, design tokens); four apps on the
+kernel; casepacket interchange live across all four with two verified round
+trips; ADR-001…005; a demonstrable, acceptance-tested suite. Remaining work
+is product features (BACKLOG) and operator rollout (OPERATOR_CHECKLIST), not
+overhaul debt.
+
+
 ## 2026-07-10 — Overhaul session 4: land, lock, demonstrate
 
 ### Stage 0 reality check

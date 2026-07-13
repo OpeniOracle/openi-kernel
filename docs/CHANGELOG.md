@@ -1,5 +1,70 @@
 # Openi Ecosystem — Change Log
 
+## 2026-07-10 — Overhaul session 4: land, lock, demonstrate
+
+### Stage 0 reality check
+No operator-checklist item had been completed: zero tags on any remote,
+stale architecture branches present in all three repos, BriefBuilder default
+still the legacy branch (`main` exists at the same head). Checklist stands.
+One surprise: the Lovable bot pushed three commits to LinkView `main`
+between sessions ("live share E2E guard" + wip); merged cleanly and its
+tests pass in the post-merge verify.
+
+### Stage 1 — session 3 landed
+True merges everywhere: kernel v0.4.0 → main (merge `aa5b376`, tagged
+locally); consumer pins + LinkView's vendoring manifest restamped to that
+SHA; BriefBuilder merged to its legacy default with `main` fast-forwarded to
+the same head; Waypoint/HashLens/LinkView → main. Tag pushes attempted and
+VERIFIED still refused (0 tags on remote); branch deletions retried with
+explicit refspecs and verified refused — both remain operator commands.
+Post-merge: full gates green on every default (LinkView 148 tests incl. the
+bot's new suite), Waypoint→BriefBuilder round trip green, drift check green.
+
+### Stage 2
+- **HashLens fail-closed entitlements (A).** Migration 0003 (additive:
+  grant table + RLS + SECURITY DEFINER has_tool() + seed for every existing
+  profile + signup parity) and 0004 (the separate enforcement flip on the
+  cases policies). Client mirror is pure fail-closed decision logic — lookup
+  errors deny; pre-0003 missing table is a documented legacy-allow so the
+  rollout can't brick deployments — with an analyst-readable denied screen.
+  32 tests.
+- **Kernel v0.5.0 — ADR-005 Entity (B).** Full Entity records (aliases,
+  description, attributes, gradings, extensions) and optional
+  packet.relationships, strictly additive in casepacket v1 (old packets
+  byte-compatible; edges must resolve in-packet). entityAnnexSections() in
+  the export layer. LinkView exports the register (verification verbatim on
+  its own axis; packet export moved to the case overview as SUITE HAND-OFF —
+  it is analyst tooling, so it also works for synthetic cases the client
+  view refuses). BriefBuilder imports registers into a new entities
+  collection (relations flattened to row ids at import) and renders the
+  entity annex in the client document. Design input: the harvested
+  linkview.profile@1 spec.
+- **Demo (C).** Synthetic demo fixtures (hashlens/demo; Waypoint sample and
+  LinkView seed already in-app), docs/DEMO_RUNBOOK.md (4-act client
+  walkthrough with talk-track), and the scenario EXECUTED end to end through
+  the real UIs via browser automation: Waypoint triage → packet →
+  BriefBuilder brief → PDF; HashLens match → case → client summary + packet;
+  LinkView entity-bearing packet (real export code path) → BriefBuilder →
+  client PDF with entity annex. One defect found and fixed during execution
+  (demo script disambiguation of the Escalated filter chip vs. disposition
+  button — script-side). Artifacts: 9 screenshots, 2 packets, 3 HTML
+  deliverables, 3 PDFs.
+- **bun attempt (D).** bun 1.3.11 now resolves git deps via the GitHub API
+  tarball endpoint — the proxy 403s it. Sync mechanism stays; one-file
+  switch documented.
+
+## Queued backlog — next session (session 5)
+
+1. Land session-4 Stage 2 (kernel v0.5.0 `6d7c992` first, then apps — pins
+   already reference it).
+2. Operator items (unchanged plus new rollout steps — see checklist).
+3. LinkView: import casepackets (today it only exports); BriefBuilder
+   entities tab (register is annex-only today).
+4. Harvested-spec remainders: full Source objects, deconfliction records
+   (need a second consumer); kernel strict-UUID helper; Waypoint packet
+   import; HashLens→LinkView graph export; BriefBuilder AI proxy; DOCX on
+   client demand; launch/SSO platform decision.
+
 ## 2026-07-10 — Overhaul session 3: land, unify, deliver
 
 ### Stage 1 — session 2 landed

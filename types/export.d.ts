@@ -48,3 +48,9 @@ export interface DocToHtmlOptions {
 export function docToMarkdown(doc: DocModel): string
 export function docToHtml(doc: DocModel, options?: DocToHtmlOptions): string
 export function gradingLegendSection(): DocSection
+
+import type { Entity, Relationship } from './entity.js'
+export function entityAnnexSections(
+  entities?: Entity[],
+  relationships?: Relationship[],
+): DocSection[]
